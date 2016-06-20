@@ -1,0 +1,42 @@
+CREATE TABLE `nuistojv2`.`ranklistforexcerise` (
+    `uid` INT(11) NOT NULL,
+    `user_name` VARCHAR(32) NOT NULL DEFAULT '',
+    `name` CHAR(12) NOT NULL,
+    `college` VARCHAR(20) DEFAULT NULL,
+    `major` VARCHAR(20) DEFAULT NULL,
+    `grade` INT(4) DEFAULT NULL,
+    `ac` INT(11) NOT NULL,
+    `submit` INT(11) NOT NULL,
+    `ratio` DOUBLE,
+    PRIMARY KEY (`uid`)
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+
+DROP EVENT IF EXISTS nuistojv2.exercise_ranklist;
+
+create event nuistojv2.exercise_ranklist
+ON SCHEDULE every 1 day starts date_add(date(curdate() + 1),interval 4 hour)
+#ON SCHEDULE EVERY 60 SECOND 
+on completion not preserve 
+do call ranklist_for_exercise;
+
+DROP EVENT IF EXISTS nuistojv2.course_ranklist;
+
+create event nuistojv2.course_ranklist
+ON SCHEDULE every 1 day starts date_add(date(curdate() + 1),interval 3 hour)
+#ON SCHEDULE EVERY 60 SECOND 
+on completion not preserve 
+do call ranklist_for_course;
+
+#every 1 day starts date_add(date(curdate() + 1),interval 3 hour)
+
+
+
+set time_zone='+8:00';
+show variables like '%sche%'; 
+#set global event_scheduler=1; 
+alter event course_ranklist ON COMPLETION PRESERVE ENABLE; 
+alter event exercise_ranklist ON COMPLETION PRESERVE ENABLE; 
+SHOW EVENTS;
+select * from mysql.event;
+SELECT * FROM information_schema.events;
